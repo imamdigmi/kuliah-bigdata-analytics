@@ -1,0 +1,49 @@
+{
+  "dataset_id": 235,
+  "source": "https://doi.org/10.24432/C58K54",
+  "quality": {
+    "source_rows": 2075259,
+    "invalid_timestamp_rows": 0,
+    "duplicate_timestamps": 0,
+    "missing_numeric_rows": 25979,
+    "negative_numeric_rows": 0,
+    "clean_rows": 2049280,
+    "excluded_rows": 25979,
+    "negative_other_wh_rows": 1050,
+    "full_days": 1358
+  },
+  "versions": {
+    "ucimlrepo": "0.0.7",
+    "pandas": "2.2.3",
+    "numpy": "2.1.3",
+    "scikit-learn": "1.6.1",
+    "pyspark": "4.0.1",
+    "networkx": "3.7",
+    "pyarrow": "23.0.1"
+  },
+  "train_end": "2009-09-19",
+  "validation_end": "2010-04-23",
+  "features": [
+    "lag_1",
+    "lag_2",
+    "lag_7",
+    "mean_7",
+    "weekday_sin",
+    "weekday_cos",
+    "month_sin",
+    "month_cos"
+  ],
+  "chosen_model": "RF Spark depth 8",
+  "spark_start_seconds": 15.745396933999928,
+  "graph": {
+    "training_full_days": 955,
+    "threshold": 0.7,
+    "nodes": 24,
+    "edges": 14,
+    "density": 0.050724637681159424,
+    "components": 10,
+    "isolated_nodes": 7,
+    "communities": 11,
+    "modularity": 0.6276172823183939
+  }
+}

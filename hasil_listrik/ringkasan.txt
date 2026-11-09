@@ -1,0 +1,13 @@
+Baris sumber: 2,075,259
+Baris bersih: 2,049,280
+Hari lengkap: 1358
+Baris train/validation/test: 629/128/152
+Model utama berdasarkan validation: RF Spark depth 8
+MAE test: 3.758 kWh
+RMSE test: 5.139 kWh
+R2 test: 0.521
+Perbaikan MAE terhadap baseline lag 1: 14.61%
+Graph: 24 node, 14 edge, 11 komunitas
+Jam terhubung dengan peringkat tertinggi (maksimal 3): [2, 3, 1]
+Hubungan graph bersifat korelasional; bukan sebab-akibat.
+Waktu komputasi adalah satu eksekusi lokal, bukan benchmark cluster.
