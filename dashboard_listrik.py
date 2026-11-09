@@ -1,7 +1,5 @@
-import io
 import json
 import math
-import zipfile
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -10,8 +8,8 @@ import streamlit as st
 
 
 @st.cache_data
-def baca_hasil(isi_zip):
-    """Baca hasil yang diekspor notebook, tanpa mengolah ulang data mentah."""
+def baca_hasil(folder):
+    """Baca file hasil notebook dari folder hasil_listrik."""
     nama_csv = {
         "daily": "daily.csv",
         "test": "evaluasi_test.csv",
@@ -20,16 +18,13 @@ def baca_hasil(isi_zip):
         "edges": "graph_edges.csv",
         "threshold": "graph_threshold.csv",
     }
-    with zipfile.ZipFile(io.BytesIO(isi_zip)) as arsip:
-        kurang = set(nama_csv.values()) | {"run_info.json"}
-        kurang -= set(arsip.namelist())
-        if kurang:
-            raise ValueError("File dalam ZIP belum lengkap: " + ", ".join(sorted(kurang)))
-        hasil = {
-            kunci: pd.read_csv(io.BytesIO(arsip.read(nama)))
-            for kunci, nama in nama_csv.items()
-        }
-        hasil["info"] = json.loads(arsip.read("run_info.json"))
+    kurang = [nama for nama in [*nama_csv.values(), "run_info.json"]
+              if not (folder / nama).is_file()]
+    if kurang:
+        raise FileNotFoundError("File hasil belum lengkap: " + ", ".join(kurang))
+    hasil = {kunci: pd.read_csv(folder / nama)
+             for kunci, nama in nama_csv.items()}
+    hasil["info"] = json.loads((folder / "run_info.json").read_text(encoding="utf-8"))
     return hasil
 
 
@@ -68,20 +63,11 @@ st.set_page_config(page_title="Analisis konsumsi listrik", layout="wide")
 st.title("Analisis konsumsi listrik rumah tangga")
 st.caption("Data UCI Individual Household Electric Power Consumption; hasil dari notebook analisis.")
 
-lokal = Path(__file__).with_name("hasil_listrik.zip")
-unggahan = st.file_uploader("Unggah ZIP hasil notebook", type="zip")
-if unggahan is not None:
-    isi_zip = unggahan.getvalue()
-elif lokal.exists():
-    isi_zip = lokal.read_bytes()
-    st.info("Menampilkan hasil_listrik.zip di folder dashboard.")
-else:
-    st.info("Jalankan notebook sampai selesai, lalu unggah hasil_listrik.zip di atas.")
-    st.stop()
+folder_hasil = Path(__file__).resolve().parent / "hasil_listrik"
 
 try:
-    data = baca_hasil(isi_zip)
-except (zipfile.BadZipFile, ValueError, KeyError, pd.errors.ParserError) as err:
+    data = baca_hasil(folder_hasil)
+except (FileNotFoundError, ValueError, KeyError, pd.errors.ParserError) as err:
     st.error(f"Hasil notebook tidak dapat dibaca: {err}")
     st.stop()
 
